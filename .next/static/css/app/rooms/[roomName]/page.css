@@ -1,0 +1,54 @@
+/*!*******************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[3]!./styles/Debug.module.css ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************/
+.Debug_overlay__SZwFO {
+  position: absolute;
+  top: 0;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card, 0 8px 48px 0 #ffe06633, 0 1.5px 0 #fff1);
+  padding: 1.5rem;
+  max-height: min(100%, 100vh);
+  overflow-y: auto;
+}
+
+.Debug_detailsSection__vJYFV {
+  padding-left: 1rem;
+}
+
+.Debug_detailsSection__vJYFV > div {
+  padding-left: 1rem;
+}
+
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[7].use[3]!./styles/SettingsMenu.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+.SettingsMenu_settingsCloseButton__mdSd2 {
+  position: absolute;
+  right: var(--lk-grid-gap);
+  bottom: var(--lk-grid-gap);
+}
+
+.SettingsMenu_tabs__uq0cC {
+  position: relative;
+  display: flex;
+  align-content: space-between;
+}
+
+.SettingsMenu_tabs__uq0cC > .SettingsMenu_tab__Pfa2A {
+  padding: 0.5rem;
+  border-radius: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid;
+  border-color: var(--accent-gold, #ffe066);
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.SettingsMenu_tabs__uq0cC > .SettingsMenu_tab__Pfa2A[aria-pressed='true'] {
+  border-color: var(--primary, #10b981);
+  background: var(--bg-hover);
+  color: var(--accent-gold, #ffe066);
+}
+
