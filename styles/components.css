@@ -1,0 +1,506 @@
+/* Vocably Premium Component Styles */
+
+:root {
+  --primary: #10b981;
+  --primary-dark: #08916d;
+  --primary-light: #1de9b6;
+  --accent: #ffe066;
+  --accent-gold: #ffe066;
+  --accent-gold-dark: #bfa500;
+  --accent-gradient: linear-gradient(90deg, #ffe066 0%, #bfa500 100%);
+  --bg-dark: #090a0f;
+  --bg-card: #16181c;
+  --bg-hover: #23272f;
+  --text-primary: #f6f6f6;
+  --text-secondary: #bdbdbd;
+  --text-muted: #757575;
+  --radius-lg: 1.2rem;
+  --radius-xl: 2.2rem;
+  --shadow-lg: 0 10px 32px 0 #ffe06622, 0 1.5px 0 #fff1;
+  --shadow-card: 0 8px 48px 0 #ffe06633, 0 1.5px 0 #fff1;
+  --transition: 0.18s cubic-bezier(.4,2,.3,1);
+}
+
+/* Remove the global background reset */
+/*
+* {
+  background: none !important;
+  box-shadow: none !important;
+}
+*/
+
+body, html {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 60% 0%, rgba(16,185,129,0.08) 0%, rgba(16,18,22,0.98) 70%, #0a0a0e 100%) !important,
+    linear-gradient(120deg, #101014 60%, #181a1b 100%) !important;
+  box-shadow: 0 0 120px 40px #10b98122 inset;
+  position: relative;
+  color: var(--text-primary);
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background: url('https://www.transparenttextures.com/patterns/noise.png');
+}
+
+/* Premium dark theme for all cards, modals, and containers */
+.card, .modal, .container, .profile-form, .premium-room-card, .tabContent, .tabContainer, .main-content {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-card, 0 8px 48px 0 #ffe06633, 0 1.5px 0 #fff1) !important;
+  border: 1.5px solid var(--border-color, #22242a) !important;
+}
+
+/* Remove any legacy or deprecated styles */
+.legacy, .deprecated, .old-style, .temp, .ugly {
+  display: none !important;
+}
+
+body, html {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  position: relative;
+  z-index: 1;
+  padding-bottom: 3rem;
+}
+
+.container, .main-content {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.header, header, .header-content {
+  background: linear-gradient(90deg, rgba(16,18,22,0.98) 0%, rgba(24,26,27,0.98) 60%, rgba(16,185,129,0.10) 100%) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 8px 32px 0 #10b98122, 0 1.5px 0 #fff1 !important;
+  border-bottom: 2px solid var(--accent-gold, #ffe066) !important;
+  backdrop-filter: blur(8px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.08) !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.header-logo {
+  font-size: 2.2rem;
+  margin-right: 18px;
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+  filter: drop-shadow(0 2px 8px #10b98144);
+  background: linear-gradient(90deg, #10b981 20%, #1de9b6 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  margin: 0 40px 0 0;
+  white-space: nowrap;
+  background: linear-gradient(90deg, #fff 20%, #1de9b6 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 24px rgba(16,185,129,0.13);
+}
+
+.header-filters {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.header-select {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-size: 1rem;
+  margin-left: 0;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: border-color 0.18s, box-shadow 0.18s;
+  outline: none;
+}
+.header-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px #10b98133;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.header-icon-btn {
+  background: rgba(255,255,255,0.07);
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: 0 1px 6px #10b98122;
+}
+.header-icon-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  box-shadow: 0 4px 16px #10b98144;
+}
+
+.create-room-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: linear-gradient(90deg, #10b981 60%, #1de9b6 100%);
+  color: #181a1b;
+  font-weight: 800;
+  padding: 12px 28px;
+  border-radius: 1.5rem;
+  border: none;
+  cursor: pointer;
+  font-size: 1.13rem;
+  box-shadow: 0 2px 16px #10b98133, 0 0.5px 0 #fff1;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+  outline: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.create-room-btn span {
+  font-size: 1.12rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #181a1b;
+  text-shadow: 0 1px 4px #fff7, 0 1px 0 #10b98122;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.create-room-btn:hover {
+  background: linear-gradient(90deg, #bfa500 0%, #ffe066 100%);
+  color: #181a1b;
+  box-shadow: 0 8px 32px #10b98144;
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Welcome Section */
+
+.welcome-card {
+  background: rgba(22, 24, 28, 0.98);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 48px 0 #23272f88, 0 1.5px 0 #ffe06633;
+  padding: 3.5rem 2.5rem 2.5rem 2.5rem;
+  margin: 3.5rem 0 2.5rem 0;
+  max-width: 520px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-title {
+  font-size: 2.6rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+  text-align: center;
+  color: #ffe066;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 32px #ffe06655, 0 2px 8px #fffbe6cc;
+  letter-spacing: 0.04em;
+}
+
+.welcome-desc, .welcome-description {
+  font-size: 1.22rem;
+  color: #fffbe6;
+  text-align: center;
+  margin-bottom: 1.7rem;
+  font-weight: 500;
+  text-shadow: 0 2px 8px #000a, 0 1px 0 #fffbe6;
+  line-height: 1.55;
+}
+
+.welcome-highlight {
+  color: #ffe066;
+  font-weight: 700;
+  text-shadow: 0 2px 8px #000a;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Button Styling */
+.button, .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #ffe066 0%, #bfa500 100%);
+  color: #181a1b;
+  font-weight: 900;
+  padding: 14px 38px;
+  border-radius: 2rem;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.12s, box-shadow var(--transition);
+  margin: 22px 0 0 0;
+  text-decoration: none;
+  font-size: 1.18rem;
+  box-shadow: 0 4px 32px #ffe06644, 0 0.5px 0 #fff1;
+  letter-spacing: 0.04em;
+  outline: none;
+  text-shadow: 0 1px 4px #fff7, 0 1px 0 #ffe06644;
+  text-transform: uppercase;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+.button:hover, .btn:hover {
+  background: linear-gradient(90deg, #bfa500 0%, #ffe066 100%);
+  color: #181a1b;
+  transform: translateY(-2px) scale(1.045);
+  box-shadow: 0 12px 40px #ffe06666;
+}
+
+/* Card Styling */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 2.2rem 2rem 2rem 2rem;
+  margin: 1.5rem 0;
+  color: var(--text-primary);
+  transition: box-shadow var(--transition), background var(--transition);
+}
+.card:hover {
+  box-shadow: 0 16px 48px #10b98133;
+  background: var(--bg-hover);
+}
+
+/* Modal Styling */
+.modal-backdrop {
+  z-index: 1000;
+  background: rgba(0,0,0,0.44);
+}
+.modal-content {
+  z-index: 1010;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 40px rgba(16, 185, 129, 0.18);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  max-width: 98vw;
+  position: relative;
+  animation: fade-in 0.2s;
+}
+
+/* Inputs */
+input, select, textarea {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-color, #23272f);
+  border-radius: 0.7rem;
+  padding: 0.7rem 1.1rem;
+  font-size: 1rem;
+  margin: 0.25rem 0;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px #10b98133;
+}
+
+/* Gold shimmer animation */
+@keyframes shimmer {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+.animate-shimmer {
+  animation: shimmer 2.5s infinite;
+}
+
+/* Noise overlay */
+.bg-noise {
+  background-image: url('https://www.transparenttextures.com/patterns/noise.png');
+  background-repeat: repeat;
+  opacity: 0.10;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .container {
+    padding: 0 1.1rem;
+  }
+  .modal-content, .card {
+    padding: 1.2rem 0.5rem;
+    min-width: unset;
+  }
+  .header {
+    font-size: 2rem;
+  }
+}
+@media (max-width: 600px) {
+  .container {
+    padding: 0 0.2rem;
+  }
+  .header {
+    font-size: 1.3rem;
+    margin-top: 1.2rem;
+  }
+  .welcome-title {
+    font-size: 1.2rem;
+  }
+  .modal-content, .card {
+    padding: 0.8rem 0.2rem;
+  }
+}
+
+/* Main container styling */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--bg-dark, #111216);
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--primary, #10b981);
+  text-shadow: 0 4px 24px rgba(16,185,129,0.13);
+  background: linear-gradient(90deg, #fff 20%, #1de9b6 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Welcome section */
+.welcome-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #ffe066;
+  text-shadow: 0 1px 8px #ffe066cc, 0 1px 0 #fffbe6, 0 0 2px #fff;
+}
+
+.welcome-desc {
+  font-size: 1.1rem;
+  color: #fffbe6;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.welcome-highlight {
+  color: #ffd600;
+  font-weight: 700;
+}
+
+/* Gold shimmer animation */
+@keyframes shimmer {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+.animate-shimmer {
+  animation: shimmer 2.5s infinite;
+}
+
+/* Noise overlay */
+.bg-noise {
+  background-image: url('https://www.transparenttextures.com/patterns/noise.png');
+  background-repeat: repeat;
+}
+
+/* Modal backdrop fix */
+.modal-backdrop {
+  z-index: 1000;
+}
+
+/* Modal content fix */
+.modal-content {
+  z-index: 1010;
+}
+
+/* Button styling */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #4f46e5;
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin: 10px 0;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: #4338ca;
+  transform: translateY(-2px);
+}
+
+.theme-light body, .theme-light html {
+  background: #fff !important;
+  background-image: none !important;
+}
