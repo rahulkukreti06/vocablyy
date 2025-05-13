@@ -6,6 +6,9 @@ const nextConfig = {
     formats: ['image/webp'],
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
+    config.ignoreWarnings = [
+      { message: /Failed to parse source map/ },
+    ];
     // Important: return the modified config
     config.module.rules.push({
       test: /\.mjs$/,

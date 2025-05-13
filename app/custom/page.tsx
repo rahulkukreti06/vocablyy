@@ -1,6 +1,7 @@
-import { videoCodecs } from 'livekit-client';
 import { VideoConferenceClientImpl } from './VideoConferenceClientImpl';
-import { isVideoCodec } from '@/lib/types';
+
+const allowedCodecs = ['vp8', 'h264', 'vp9', 'av1'] as const;
+type AllowedCodec = typeof allowedCodecs[number];
 
 export default async function CustomRoomConnection(props: {
   searchParams: Promise<{
@@ -16,13 +17,13 @@ export default async function CustomRoomConnection(props: {
   if (typeof token !== 'string') {
     return <h2>Missing LiveKit token</h2>;
   }
-  if (codec !== undefined && !isVideoCodec(codec)) {
-    return <h2>Invalid codec, if defined it has to be [{videoCodecs.join(', ')}].</h2>;
+  if (codec !== undefined && !allowedCodecs.includes(codec as AllowedCodec)) {
+    return <h2>Invalid codec, if defined it has to be [{allowedCodecs.join(', ')}].</h2>;
   }
 
   return (
     <main data-lk-theme="default" style={{ height: '100%' }}>
-      <VideoConferenceClientImpl liveKitUrl={liveKitUrl} token={token} codec={codec} />
+      <VideoConferenceClientImpl liveKitUrl={liveKitUrl} token={token} codec={codec as AllowedCodec} />
     </main>
   );
 }

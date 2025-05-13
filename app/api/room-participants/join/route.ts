@@ -24,7 +24,7 @@ function broadcastParticipantCounts() {
       client.close();
     });
 
-    client.on('error', (error) => {
+    client.on('error', (error: unknown) => {
       console.error('WebSocket error:', error);
     });
 
@@ -47,4 +47,4 @@ export async function POST(req: NextRequest) {
     console.error('Error in join route:', error);
     return NextResponse.json({ error: 'Failed to process join request' }, { status: 500 });
   }
-} 
+}

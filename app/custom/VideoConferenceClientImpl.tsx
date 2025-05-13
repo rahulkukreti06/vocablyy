@@ -8,7 +8,6 @@ import {
   RoomConnectOptions,
   RoomOptions,
   VideoPresets,
-  type VideoCodec,
   LocalAudioTrack,
   LocalVideoTrack,
 } from 'livekit-client';
@@ -20,7 +19,7 @@ import { SettingsMenu } from '@/lib/SettingsMenu';
 export function VideoConferenceClientImpl(props: {
   liveKitUrl: string;
   token: string;
-  codec: VideoCodec | undefined;
+  codec: 'vp8' | 'h264' | 'vp9' | 'av1' | undefined;
 }) {
   const worker =
     typeof window !== 'undefined' &&

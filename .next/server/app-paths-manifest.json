@@ -1,8 +1,8 @@
 {
-  "/not-found": "app/not-found.js",
   "/page": "app/page.js",
-  "/rooms/[roomName]/page": "app/rooms/[roomName]/page.js",
   "/api/room-participants/route": "app/api/room-participants/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/user-profile/route": "app/api/user-profile/route.js"
+  "/rooms/[roomName]/page": "app/rooms/[roomName]/page.js",
+  "/api/connection-details/route": "app/api/connection-details/route.js",
+  "/api/room-participants/join/route": "app/api/room-participants/join/route.js"
 }

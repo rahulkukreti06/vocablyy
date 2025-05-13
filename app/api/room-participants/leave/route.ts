@@ -24,7 +24,7 @@ function broadcastParticipantCounts() {
       client.close();
     });
 
-    client.on('error', (error) => {
+    client.on('error', (error: unknown) => {
       console.error('WebSocket error:', error);
     });
 
