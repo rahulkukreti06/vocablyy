@@ -10,10 +10,10 @@ import { isLocalTrack, LocalTrackPublication, Track } from 'livekit-client';
 
 
 // Background image paths
-const BACKGROUND_IMAGES = [
-  { name: 'Desk', path: Desk },
-  { name: 'Nature', path: Nature },
-];
+//const BACKGROUND_IMAGES = [
+  //{ name: 'Desk', path: Desk },
+  //{ name: 'Nature', path: Nature },
+//];
 
 // Background options
 type BackgroundType = 'none' | 'blur' | 'image';
