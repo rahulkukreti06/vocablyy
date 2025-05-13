@@ -1,9 +1,18 @@
 import { NextResponse } from 'next/server';
 
 // In-memory report tracking (global for dev/demo)
-const roomReports = global.roomReports = global.roomReports || {};
+type RoomReport = {
+  count: number;
+  reporters: Set<string>;
+};
+// Use globalThis and declare property for type safety
+declare global {
+  // eslint-disable-next-line no-var
+  var roomReports: Record<string, any> | undefined;
+}
+const roomReports = globalThis.roomReports = globalThis.roomReports || {};
 
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const { roomId, reporterId, ownerId } = await req.json();
     if (!roomId || !reporterId || !ownerId) {
@@ -23,4 +32,4 @@ export async function POST(req) {
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : error }, { status: 500 });
   }
-} 
+}

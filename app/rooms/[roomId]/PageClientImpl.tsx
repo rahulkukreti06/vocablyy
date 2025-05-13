@@ -1,9 +1,21 @@
+import * as React from 'react';
+
+// Define a minimal LocalUserChoices type for now
+// You should update this to match your actual usage
+interface LocalUserChoices {
+  // Add properties as needed
+  [key: string]: any;
+}
+
 export default function PageClientImpl(props: {
   roomId: string;
   region?: string;
   hq: boolean;
-  codec: VideoCodec;
+  codec: 'vp8' | 'h264' | 'vp9' | 'av1';
 }) {
+  // Provide a dummy setIsJoining for now
+  const setIsJoining = (v: boolean) => {};
+
   const handlePreJoinSubmit = React.useCallback(async (values: LocalUserChoices) => {
     setIsJoining(true);
     // Check room capacity before joining
@@ -20,4 +32,4 @@ export default function PageClientImpl(props: {
     }
     // ... existing code ...
   }, [props.roomId, props.region]);
-} 
+}
