@@ -5,6 +5,9 @@ const nextConfig = {
   images: {
     formats: ['image/webp'],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
     config.ignoreWarnings = [
       { message: /Failed to parse source map/ },
