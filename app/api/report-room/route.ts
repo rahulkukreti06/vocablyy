@@ -10,7 +10,7 @@ declare global {
   // eslint-disable-next-line no-var
   var roomReports: Record<string, any> | undefined;
 }
-const roomReports = globalThis.roomReports = globalThis.roomReports || {};
+const roomReports = (globalThis as any).roomReports = (globalThis as any).roomReports || {};
 
 export async function POST(req: Request) {
   try {

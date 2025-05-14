@@ -1,2 +1,1 @@
-   cd path/to/Vocably
-   git init
+// This file was invalid and contained shell commands. Leaving it empty for now.

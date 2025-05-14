@@ -81,7 +81,7 @@ function LiveKitRoomContent({ showChat, showParticipants, onLeave }: { showChat:
           </div>
         )}
       </div>
-      {/* Floating controls (unchanged) */}
+      {/* Floating controls */}
       <div style={{
         position: 'fixed',
         bottom: 32,
@@ -97,22 +97,16 @@ function LiveKitRoomContent({ showChat, showParticipants, onLeave }: { showChat:
         alignItems: 'center',
       }}>
         <TrackToggle source={Track.Source.Microphone}>
-          {(enabled: boolean, toggle: () => void) => (
-            <button onClick={toggle} title={enabled ? 'Mute Microphone' : 'Unmute Microphone'} style={{ background: enabled ? '#23272f' : '#ef4444', color: enabled ? '#10b981' : '#fff', border: 'none', borderRadius: '50%', width: 54, height: 54, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #10b98133', transition: 'background 0.18s, color 0.18s' }}>{enabled ? '🎤' : '🔇'}</button>
-          )}
+          <button className="lk-button" title="Toggle Microphone" style={{ background: '#23272f', color: '#10b981', border: 'none', borderRadius: '50%', width: 54, height: 54, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #10b98133', transition: 'background 0.18s, color 0.18s' }}>🎤</button>
         </TrackToggle>
         <TrackToggle source={Track.Source.Camera}>
-          {(enabled: boolean, toggle: () => void) => (
-            <button onClick={toggle} title={enabled ? 'Turn Off Camera' : 'Turn On Camera'} style={{ background: enabled ? '#23272f' : '#ef4444', color: enabled ? '#ffd700' : '#fff', border: 'none', borderRadius: '50%', width: 54, height: 54, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #ffd70033', transition: 'background 0.18s, color 0.18s' }}>{enabled ? '📷' : '🚫'}</button>
-          )}
+          <button className="lk-button" title="Toggle Camera" style={{ background: '#23272f', color: '#ffd700', border: 'none', borderRadius: '50%', width: 54, height: 54, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #ffd70033', transition: 'background 0.18s, color 0.18s' }}>📷</button>
         </TrackToggle>
         <TrackToggle source={Track.Source.ScreenShare}>
-          {(enabled: boolean, toggle: () => void) => (
-            <button onClick={toggle} title={enabled ? 'Stop Screen Share' : 'Start Screen Share'} style={{ background: enabled ? '#23272f' : '#6366f1', color: enabled ? '#6366f1' : '#fff', border: 'none', borderRadius: '50%', width: 54, height: 54, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #6366f133', transition: 'background 0.18s, color 0.18s' }}>{'🖥️'}</button>
-          )}
+          <button className="lk-button" title="Toggle Screen Share" style={{ background: '#23272f', color: '#6366f1', border: 'none', borderRadius: '50%', width: 54, height: 54, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #6366f133', transition: 'background 0.18s, color 0.18s' }}>🖥️</button>
         </TrackToggle>
         <button onClick={onLeave} title="Leave Room" style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: '50%', width: 54, height: 54, fontSize: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 12px #ef444433', transition: 'background 0.18s, color 0.18s' }}><FaSignOutAlt /></button>
       </div>
     </>
   );
-} 
+}
