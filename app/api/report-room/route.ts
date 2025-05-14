@@ -5,10 +5,12 @@ type RoomReport = {
   count: number;
   reporters: Set<string>;
 };
-// Use globalThis and declare property for type safety
+
+// Properly extend the globalThis type
 declare global {
   var roomReports: Record<string, RoomReport> | undefined;
 }
+
 const roomReports: Record<string, RoomReport> = globalThis.roomReports ?? (globalThis.roomReports = {});
 
 export async function POST(req: Request) {
