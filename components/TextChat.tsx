@@ -10,7 +10,7 @@ interface Message {
 }
 
 export const TextChat = () => {
-  const { room } = useRoomContext();
+  const room = useRoomContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -36,7 +36,7 @@ export const TextChat = () => {
 
       // Broadcast message to all participants
       await room.localParticipant.publishData(
-        JSON.stringify(message),
+        new TextEncoder().encode(JSON.stringify(message)),
         { reliable: true }
       );
 
@@ -104,4 +104,4 @@ export const TextChat = () => {
       </div>
     </div>
   );
-}; 
+};
