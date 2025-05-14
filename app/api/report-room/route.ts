@@ -7,10 +7,9 @@ type RoomReport = {
 };
 // Use globalThis and declare property for type safety
 declare global {
-  // eslint-disable-next-line no-var
-  var roomReports: Record<string, any> | undefined;
+  var roomReports: Record<string, RoomReport> | undefined;
 }
-const roomReports = (globalThis as any).roomReports = (globalThis as any).roomReports || {};
+const roomReports: Record<string, RoomReport> = globalThis.roomReports ?? (globalThis.roomReports = {});
 
 export async function POST(req: Request) {
   try {
