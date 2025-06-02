@@ -119,221 +119,22 @@
 
 /* Base Styles */
 body, .page-container, .vocably-landing-main {
-  background:
-    radial-gradient(ellipse at 50% 0%, #232e4d 0%, #181a1b 60%, #0f0f0f 100%),
-    linear-gradient(120deg, #10b98133 0%, #6366f1 100%);
-  box-shadow: 0 0 0 100vw #000a inset;
+  /* Pure black background for dark mode */
+  background: #000 !important;
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5;
   min-height: 100vh;
 }
 
-.page-container {
-  min-height: 100vh;
-  padding-top: 80px;
-  /* background: linear-gradient(120deg, #0f172a 70%, #1e293b 100%); */
-  box-sizing: border-box;
-}
-
-.theme-light .page-container {
+html.light body,
+html.light .page-container,
+html.light .vocably-landing-main {
   background: #fff !important;
+  color: #89b5e1 !important;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  backdrop-filter: blur(16px);
-  background: linear-gradient(90deg, #181a1b 60%, #111216 100%);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.44);
-  border-bottom: 1.5px solid rgba(255,255,255,0.04);
-}
-
-.header-title {
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--text-primary);
-  background: linear-gradient(90deg, #fff, var(--primary) 80%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.header-logo {
-  font-size: 1.7rem;
-  color: var(--primary);
-  filter: drop-shadow(0 2px 8px #10b98144);
-}
-
-
-.header-content {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-}
-
-.flex-row {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-}
-
-.flex-row-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 1.3rem;
-}
-
-.header-filters {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin-left: 2rem;
-}
-
-.header-select {
-  background: #181a1b;
-  color: var(--text-primary);
-  border: 1.5px solid #08916d;
-  border-radius: var(--radius-xl);
-  padding: 0.5rem 1.2rem;
-  font-size: 1rem;
-  min-width: 130px;
-  box-shadow: 0 2px 8px 0 rgba(16,185,129,0.06);
-  transition: var(--transition);
-  height: 38px;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  outline: none;
-}
-.header-select:focus {
-  outline: none;
-  border-color: var(--primary);
-  background: #141617;
-  box-shadow: 0 0 0 2px var(--primary-light);
-}
-
-.header-select option {
-  background: #181a1b;
-  color: var(--text-primary);
-}
-
-.header-select::-ms-expand {
-  display: none;
-}
-
-/* Custom dropdown arrow for select */
-.header-select {
-  background-image: url('data:image/svg+xml;utf8,<svg fill="%2310b981" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7.293 7.293a1 1 0 011.414 0L10 8.586l1.293-1.293a1 1 0 111.414 1.414l-2 2a1 1 0 01-1.414 0l-2-2a 1 1 0 010-1.414z"/></svg>');
-  background-repeat: no-repeat;
-  background-position: right 0.8rem center;
-  background-size: 1.1em;
-  padding-right: 2.2em;
-}
-.header-select:focus {
-  outline: none;
-  border-color: var(--primary);
-  background: #141617;
-  box-shadow: 0 0 0 2px var(--primary-light);
-}
-
-
-@media (max-width: 900px) {
-  .header-content {
-    padding: 0 0.5rem;
-    max-width: 100vw;
-  }
-  .header-title {
-    font-size: 1.1rem;
-  }
-  .header-left {
-    gap: 0.6rem;
-  }
-  .header-filters {
-    margin-left: 0.5rem;
-    gap: 0.2rem;
-  }
-  .header-select {
-    min-width: 80px;
-    font-size: 0.95rem;
-    padding: 0.3rem 0.7rem;
-    height: 34px;
-  }
-  .header-actions button {
-    font-size: 0.97rem;
-    height: 36px;
-    padding: 0.3rem 0.8rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    height: auto;
-    padding: 0 0.3rem;
-    gap: 0.5rem;
-  }
-  .header-left {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.3rem;
-    width: 100%;
-  }
-  .header-filters {
-    margin-left: 0;
-    gap: 0.2rem;
-    width: 100%;
-  }
-  .header-select {
-    width: 100%;
-    min-width: 0;
-    font-size: 0.92rem;
-    margin-bottom: 0.2rem;
-  }
-  .header-actions {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-  }
-  .header-title {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 430px) {
-  .header-title {
-    font-size: 0.95rem;
-  }
-  .header-logo {
-    font-size: 1.1rem;
-  }
-  .header-actions button {
-    font-size: 0.9rem;
-    padding: 0.2rem 0.5rem;
-  }
-}
+/* Removed header-related styles as they are moved to header.css */
 
 /* Modal and card responsiveness */
 @media (max-width: 600px) {
@@ -916,30 +717,6 @@ room-card__footer {
   margin-right: var(--space-1);
 }
 
-/* Search Input */
-.search-input {
-  position: relative;
-  width: 100%;
-  max-width: 220px;
-  height: 40px; /* Set fixed height for the search bar container */
-}
-
-.search-input__icon {
-  position: absolute;
-  left: var(--space-3);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.search-input input {
-  padding-left: var(--space-8);
-  width: 100%;
-  height: 40px; /* Set fixed height for the input itself */
-  box-sizing: border-box;
-}
-
 /* Modal */
 .modal-backdrop {
   position: fixed;
@@ -1002,10 +779,6 @@ room-card__footer {
   
   .filter-group {
     width: 100%;
-  }
-  
-  .search-input {
-    max-width: 100%;
   }
 }
 
@@ -1073,615 +846,106 @@ room-card__footer {
   }
 }
 
-/* Add light theme overrides for backgrounds and text colors */
-html.light body,
-html.light .page-container,
-html.light .vocably-landing-main {
-  background: linear-gradient(120deg, #fff 60%, #ffe066 100%) !important;
+/* === Light Theme Overrides (migrated from header.css) === */
+html.light, body.light {
+  background: #0e0808 !important;
   color: #181a1b !important;
 }
-
 html.light .header-root,
 body.light .header-root {
-  background: linear-gradient(90deg, #fff 70%, #ffe066 100%) !important;
-  color: #181a1b !important;
-  border-bottom: 1.5px solid #ffe06644 !important;
-  box-shadow: 0 4px 24px 0 #ffe06633 !important;
+  background: linear-gradient(90deg, #fff 70%, #cec9b4 100%);
+  color: #181a1b;
+}
+html.light .header-brand-text,
+body.light .header-brand-text {
+  color: #232e4d;
+  text-shadow: none;
+}
+html.light .header-btn,
+body.light .header-btn {
+  color: #232e4d;
+  background: none;
+}
+html.light .header-btn:hover,
+body.light .header-btn:hover {
+  background: #ffe066;
+  color: #232e4d;
+}
+html.light .search-input input,
+body.light .search-input input {
+  background: #fff;
+  color: #232e4d;
+  border-color: #bbb;
 }
 
-html.light .main-content,
-body.light .main-content,
-html.light .container,
-body.light .container {
-  background: transparent !important;
-  box-shadow: none !important;
+/* Light theme: ensure all text in cards is dark */
+html.light .RoomCard_room-card__4QSdZ *,
+body.light .RoomCard_room-card__4QSdZ * {
+  color: #2c3e50 !important;
 }
 
-html.light .card,
-body.light .card,
-html.light .RoomCard_room-card__4QSdZ,
-body.light .RoomCard_room-card__4QSdZ {
-  background: linear-gradient(135deg, #fff9d6 80%, #ffe066 100%) !important;
-  color: #232e4d !important;
-  border-radius: 1.2rem !important;
-  box-shadow: 0 8px 32px #ffe06644, 0 1.5px 0 #ffe06611 !important;
-  border: 1.5px solid #ffe06699 !important;
-  transition: box-shadow 0.2s, background 0.2s;
-}
-
+/* Light theme: card hover effect */
 html.light .card:hover,
 body.light .card:hover,
 html.light .RoomCard_room-card__4QSdZ:hover,
 body.light .RoomCard_room-card__4QSdZ:hover {
-  box-shadow: 0 16px 48px #ffe06666 !important;
-  background: linear-gradient(135deg, #fff7b2 60%, #ffe066 100%) !important;
+  box-shadow: 0 8px 24px rgba(44, 62, 80, 0.08), 0 2px 0 rgba(44, 62, 80, 0.04) !important;
+  background: #eef1f5 !important; /* Slightly darker gray on hover */
 }
 
-html.light .RoomCard_room-card__4QSdZ *,
-body.light .RoomCard_room-card__4QSdZ * {
-  color: #232e4d !important;
-}
-
-html.light .premium-room-card,
-body.light .premium-room-card {
-  background: linear-gradient(135deg, #fffbe6 80%, #ffe066 100%) !important;
-  color: #232e4d !important;
-  border-radius: 1.2rem !important;
-  box-shadow: 0 8px 32px #ffe06644, 0 1.5px 0 #ffe06611 !important;
-  border: 1.5px solid #ffe06699 !important;
-}
-
-html.light .header-title,
-body.light .header-title {
-  color: #232e4d !important;
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
-  -webkit-background-clip: initial !important;
-  background-clip: initial !important;
-  text-shadow: none !important;
-}
-
-html.light .header-logo,
-body.light .header-logo {
-  color: #10b981 !important;
-}
-
-html.light .modal,
-html.light .modal.join-room-modal,
-body.light .modal,
-body.light .modal.join-room-modal {
-  background: #fffbe6 !important;
-  color: #181a1b !important;
-  box-shadow: 0 8px 48px 0 #ffe06633, 0 1.5px 0 #ffe06611 !important;
-}
-
-html.light .header-btn,
-body.light .header-btn {
-  color: #232e4d !important;
-  background: none !important;
-}
-
-html.light .header-btn:hover,
-body.light .header-btn:hover {
-  background: #ffe066 !important;
-  color: #232e4d !important;
-}
-
-html.light .search-input input,
-body.light .search-input input {
+/* Light theme: main background pure white, room cards light grey */
+html.light body,
+html.light .page-container,
+html.light .vocably-landing-main {
   background: #fff !important;
-  color: #232e4d !important;
-  border-color: #bbb !important;
-}
-
-html.light .header-select,
-body.light .header-select {
-  background: #fff !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe066 !important;
-}
-
-html.light .header-select option,
-body.light .header-select option {
-  background: #fff !important;
-  color: #232e4d !important;
-}
-
-html.light .header-profile-btn,
-body.light .header-profile-btn {
-  color: #232e4d !important;
-}
-
-html.light .header-mobile-menu,
-body.light .header-mobile-menu {
-  background: #fff !important;
-  color: #232e4d !important;
-}
-
-html.light .header-actions button,
-body.light .header-actions button {
-  color: #232e4d !important;
-}
-
-html.light .header-content,
-body.light .header-content {
-  background: none !important;
-}
-
-html.light .tabContent,
-body.light .tabContent,
-html.light .tabContainer,
-body.light .tabContainer {
-  background: #fffbe6 !important;
-  color: #181a1b !important;
-  border: 1px solid #ffe06644 !important;
-}
-
-html.light .profile-form,
-body.light .profile-form {
-  background: #fffbe6 !important;
-  color: #181a1b !important;
-}
-
-html.light .UserProfile_modal___hSZ0,
-body.light .UserProfile_modal___hSZ0 {
-  background: linear-gradient(135deg, #fffbe6 90%, #ffe066 100%) !important;
-  color: #232e4d !important;
-  box-shadow: 0 16px 64px 0 #ffe06644, 0 2px 12px 0 #ffe06622 !important;
-  border: 2px solid #ffe066cc !important;
-  padding: 3.5rem 2.5rem 2.5rem 2.5rem !important;
-  max-width: 600px !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_avatarGlow__PrA9l,
-body.light .UserProfile_modal___hSZ0 .UserProfile_avatarGlow__PrA9l {
-  background: radial-gradient(circle, #ffe06677 0%, #fffbe6 80%) !important;
-  box-shadow: 0 0 32px 0 #ffe06677, 0 2px 16px #ffe06633 !important;
-  margin-bottom: 1.2rem !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_avatarCircle__Qw1vA,
-body.light .UserProfile_modal___hSZ0 .UserProfile_avatarCircle__Qw1vA {
-  background: #fffbe6 !important;
-  color: #bfa100 !important;
-  border: 3px solid #ffe066cc !important;
-  text-shadow: 0 2px 8px #ffe06655 !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_section__n_k4p,
-body.light .UserProfile_modal___hSZ0 .UserProfile_section__n_k4p {
-  background: linear-gradient(120deg, #fffde6 90%, #ffe066 100%) !important;
-  border-radius: 22px !important;
-  box-shadow: 0 4px 24px #ffe06622 !important;
-  border: 1.5px solid #ffe06655 !important;
-  margin: 2.2rem 0 2.2rem 0 !important;
-  padding: 2.2rem 1.7rem !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_section__n_k4p + .UserProfile_section__n_k4p,
-body.light .UserProfile_modal___hSZ0 .UserProfile_section__n_k4p + .UserProfile_section__n_k4p {
-  border-top: 1.5px solid #ffe06644 !important;
-  margin-top: 2.5rem !important;
-  padding-top: 2.5rem !important;
-}
-html.light .UserProfile_modal___hSZ0 input,
-html.light .UserProfile_modal___hSZ0 select,
-html.light .UserProfile_modal___hSZ0 textarea,
-body.light .UserProfile_modal___hSZ0 input,
-body.light .UserProfile_modal___hSZ0 select,
-body.light .UserProfile_modal___hSZ0 textarea {
-  background: #fff !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe06699 !important;
-  box-shadow: 0 1px 4px #ffe06622 !important;
-  margin-bottom: 1.1rem !important;
-  font-size: 1.08rem !important;
-  padding: 1.1rem 1.3rem !important;
-}
-html.light .UserProfile_modal___hSZ0 input:focus,
-html.light .UserProfile_modal___hSZ0 select:focus,
-html.light .UserProfile_modal___hSZ0 textarea:focus,
-body.light .UserProfile_modal___hSZ0 input:focus,
-body.light .UserProfile_modal___hSZ0 select:focus,
-body.light .UserProfile_modal___hSZ0 textarea:focus {
-  border-color: #bfa100 !important;
-  box-shadow: 0 0 0 2px #ffe06655 !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_addButton__aLrsn,
-body.light .UserProfile_modal___hSZ0 .UserProfile_addButton__aLrsn {
-  background: linear-gradient(90deg, #ffe066 80%, #fffbe6 100%) !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe06699 !important;
-  box-shadow: 0 2px 12px #ffe06644 !important;
-  font-weight: 700 !important;
-  margin-top: 1.2rem !important;
-  padding: 1.1rem 2.2rem !important;
-  font-size: 1.08rem !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_addButton__aLrsn:hover,
-body.light .UserProfile_modal___hSZ0 .UserProfile_addButton__aLrsn:hover {
-  background: linear-gradient(90deg, #fffbe6 70%, #ffe066 100%) !important;
-  color: #181a1b !important;
-  box-shadow: 0 4px 16px #ffe06699 !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_sectionBadge__CLv_F,
-body.light .UserProfile_modal___hSZ0 .UserProfile_sectionBadge__CLv_F {
-  background: #ffe066 !important;
-  color: #232e4d !important;
-  border: 1px solid #ffe06699 !important;
-  box-shadow: 0 2px 8px #ffe06644 !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_languageItem__hh94B,
-body.light .UserProfile_modal___hSZ0 .UserProfile_languageItem__hh94B {
-  background: #fffde6 !important;
-  color: #232e4d !important;
-  border: 1px solid #ffe06655 !important;
-  box-shadow: 0 1px 4px #ffe06622 !important;
-  margin-bottom: 0.7rem !important;
-  padding: 1.1rem 1.7rem !important;
-  border-radius: 14px !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_languageItem__hh94B:last-child,
-body.light .UserProfile_modal___hSZ0 .UserProfile_languageItem__hh94B:last-child {
-  margin-bottom: 0 !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_removeButton__9Wwh_,
-body.light .UserProfile_modal___hSZ0 .UserProfile_removeButton__9Wwh_ {
-  color: #ff5252 !important;
-  margin-left: 1.2rem !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_closeButton__YCOaY,
-body.light .UserProfile_modal___hSZ0 .UserProfile_closeButton__YCOaY {
-  color: #232e4d !important;
-  font-size: 1.5rem !important;
-  top: 1.2rem !important;
-  right: 1.2rem !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_sectionTitle__6rLEi,
-body.light .UserProfile_modal___hSZ0 .UserProfile_sectionTitle__6rLEi {
-  color: #bfa100 !important;
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  margin-bottom: 0.7rem !important;
-}
-html.light .UserProfile_modal___hSZ0 .UserProfile_premiumIcon__Q82iL,
-body.light .UserProfile_modal___hSZ0 .UserProfile_premiumIcon__Q82iL {
-  color: #bfa100 !important;
-  filter: drop-shadow(0 0 12px #ffe06688) !important;
-}
-
-html.light .UserProfile_sectionBadge__CLv_F,
-body.light .UserProfile_sectionBadge__CLv_F {
-  background: #ffe066 !important;
-  color: #232e4d !important;
-}
-
-html.light .UserProfile_languageItem__hh94B,
-body.light .UserProfile_languageItem__hh94B {
-  background: #fffde6 !important;
-  color: #232e4d !important;
-}
-
-html.light .UserProfile_addButton__aLrsn,
-body.light .UserProfile_addButton__aLrsn {
-  background: linear-gradient(45deg, #ffe066, #fffbe6) !important;
-  color: #232e4d !important;
-}
-
-html.light .UserProfile_removeButton__9Wwh_,
-body.light .UserProfile_removeButton__9Wwh_ {
-  color: #ff5252 !important;
-}
-
-html.light .UserProfile_closeButton__YCOaY,
-body.light .UserProfile_closeButton__YCOaY {
-  color: #232e4d !important;
-}
-
-html.light .UserProfile_avatarGlow__PrA9l,
-body.light .UserProfile_avatarGlow__PrA9l {
-  background: radial-gradient(circle, #ffe06644 0%, #fffbe6 80%) !important;
-}
-
-html.light .UserProfile_avatarCircle__Qw1vA,
-body.light .UserProfile_avatarCircle__Qw1vA {
-  background: #fffbe6 !important;
-}
-
-html.light .RoomCard_room-card__4QSdZ .room-card__title,
-html.light .RoomCard_room-card__4QSdZ .room-card__meta,
-html.light .RoomCard_room-card__4QSdZ .room-card__status,
-html.light .RoomCard_room-card__4QSdZ .room-card__participants,
-html.light .RoomCard_room-card__4QSdZ .room-card__footer,
-html.light .RoomCard_room-card__4QSdZ .room-card__footer *,
-html.light .RoomCard_room-card__4QSdZ .btn--primary,
-html.light .RoomCard_room-card__4QSdZ .header-profile-btn,
-html.light .RoomCard_room-card__4QSdZ .room-card__profile-name {
-  color: #232e4d !important;
-}
-
-html.light .RoomCard_room-card__4QSdZ .btn--primary {
-  background: linear-gradient(90deg, #ffe066 80%, #fff9d6 100%) !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe06699 !important;
-  box-shadow: 0 2px 12px #ffe06644 !important;
-  text-shadow: none !important;
-}
-
-html.light .RoomCard_room-card__4QSdZ .btn--primary:hover {
-  background: linear-gradient(90deg, #fffbe6 70%, #ffe066 100%) !important;
-  color: #181a1b !important;
-  text-shadow: none !important;
-}
-
-html.light .RoomCard_room-card__4QSdZ .room-card__status,
-html.light .RoomCard_room-card__4QSdZ .room-card__participants {
-  background: #ffe06633 !important;
-  color: #10b981 !important;
+  color: #2c3e50 !important;
 }
 
 html.light .room-card,
-body.light .room-card {
-  background: linear-gradient(135deg, #fffbe6 80%, #ffe066 100%) !important;
-  color: #232e4d !important;
+body.light .room-card,
+html.light .RoomCard_room-card__4QSdZ,
+body.light .RoomCard_room-card__4QSdZ {
+  background: #e9ecef !important; /* medium light grey for card */
+  color: #2c3e50 !important;
   border-radius: 1.2rem !important;
-  box-shadow: 0 8px 32px 0 #ffe06655, 0 1.5px 0 #ffe06633 !important;
-  border: 1.5px solid #ffe066cc !important;
-  transition: box-shadow 0.22s, background 0.22s, transform 0.18s;
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 3px 16px rgba(44, 62, 80, 0.04), 0 1px 0 rgba(44, 62, 80, 0.02) !important;
+  border: 1.5px solid rgba(44, 62, 80, 0.08) !important;
+  transition: box-shadow 0.2s, background 0.2s;
 }
-html.light .room-card__main,
-body.light .room-card__main {
-  background: linear-gradient(120deg, #fffbe6 60%, #fff9d6 100%) !important;
-  border-radius: 1rem !important;
-  padding: 1.2rem 1.5rem 1.2rem 1.2rem !important;
-  box-shadow: 0 2px 12px 0 #ffe06622 !important;
+
+.room-card {
+  background: #e9ecef;
 }
-html.light .room-card__footer,
-body.light .room-card__footer {
-  background: linear-gradient(90deg, #fffbe6 60%, #ffe066 100%) !important;
-  border-top: 1px solid #ffe06677 !important;
-  box-shadow: 0 -2px 12px 0 #ffe06622 !important;
-  z-index: 1;
-}
-html.light .room-card__accent,
-body.light .room-card__accent {
-  background: linear-gradient(180deg, #ffe066 0%, #fff9d6 100%) !important;
-  box-shadow: 0 0 12px 2px #ffe06655 !important;
-}
-html.light .room-card__meta,
-body.light .room-card__meta {
-  background: linear-gradient(90deg, #fffde6 60%, #ffe066 100%) !important;
-  border-radius: 0.7rem !important;
-  padding: 0.3rem 0.8rem !important;
-  color: #7c6a00 !important;
-  font-weight: 600 !important;
-}
-html.light .room-card__status,
-body.light .room-card__status,
-html.light .room-card__participants,
-body.light .room-card__participants {
-  background: linear-gradient(90deg, #ffe06633 60%, #fffbe6 100%) !important;
-  color: #10b981 !important;
-  border-radius: var(--radius-full) !important;
-}
-html.light .room-card__title,
-body.light .room-card__title {
-  color: #bfa100 !important;
-  background: linear-gradient(90deg, #ffe066 60%, #fffbe6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-html.light .room-card__body p,
-body.light .room-card__body p {
-  color: #232e4d !important;
-  background: linear-gradient(90deg, #fffbe6 60%, #fff9d6 100%) !important;
-  border-radius: 0.5rem;
-  padding: 0.3rem 0.7rem;
-}
-html.light .room-card .btn--primary,
-body.light .room-card .btn--primary {
-  background: linear-gradient(90deg, #ffe066 80%, #fff9d6 100%) !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe06699 !important;
-  box-shadow: 0 2px 12px #ffe06644 !important;
-  text-shadow: none !important;
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
-}
-html.light .room-card .btn--primary:hover,
-body.light .room-card .btn--primary:hover {
-  background: linear-gradient(90deg, #fffbe6 70%, #ffe066 100%) !important;
-  color: #181a1b !important;
-  text-shadow: none !important;
-  box-shadow: 0 4px 16px #ffe06699 !important;
-  transform: scale(1.06) translateY(-2px);
-}
+
+
 html.light .room-card:hover,
-body.light .room-card:hover {
-  box-shadow: 0 24px 64px 0 #ffe066cc, 0 8px 32px 0 #ffe06655 !important;
-  background: linear-gradient(135deg, #fffde6 60%, #ffe066 100%) !important;
-  transform: translateY(-6px) scale(1.025);
-}
-html.light .room-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(120deg, #fffbe6 60%, #ffe066 100%);
-  opacity: 0.7;
-  z-index: 0;
-  transition: opacity 0.22s;
-}
-html.light .room-card:hover::before {
-  opacity: 0.9;
-}
-html.light .room-card__main,
-body.light .room-card__main {
-  position: relative;
-  z-index: 1;
-}
-html.light .room-card__footer,
-body.light .room-card__footer {
-  background: rgba(255, 240, 102, 0.08) !important;
-  border-top: 1px solid #ffe06677 !important;
-  box-shadow: 0 -2px 12px 0 #ffe06622 !important;
-  z-index: 1;
-}
-html.light .room-card__accent,
-body.light .room-card__accent {
-  background: linear-gradient(180deg, #ffe066 0%, #fff9d6 100%) !important;
-  box-shadow: 0 0 12px 2px #ffe06655 !important;
+body.light .room-card:hover,
+html.light .RoomCard_room-card__4QSdZ:hover,
+body.light .RoomCard_room-card__4QSdZ:hover {
+  background: #dbe0e6 !important; /* slightly darker grey on hover */
 }
 
-html.light .room-card *,
-body.light .room-card * {
-  color: #232e4d !important;
-  background: transparent !important;
-  border-color: #ffe06699 !important;
-  box-shadow: none !important;
-}
-html.light .room-card__main,
-body.light .room-card__main,
-html.light .room-card__body,
-body.light .room-card__body {
-  background: transparent !important;
-  color: #232e4d !important;
-}
-html.light .room-card__footer,
-body.light .room-card__footer {
-  background: transparent !important;
-  border-top: 1px solid #ffe06644 !important;
-}
-html.light .room-card__title,
-body.light .room-card__title {
-  color: #bfa100 !important;
-}
-html.light .room-card__meta,
-body.light .room-card__meta {
-  color: #7c6a00 !important;
-}
-html.light .room-card__status,
-body.light .room-card__status,
-html.light .room-card__participants,
-body.light .room-card__participants {
-  background: #ffe06633 !important;
-  color: #10b981 !important;
-  border-radius: var(--radius-full) !important;
-}
-html.light .room-card__accent,
-body.light .room-card__accent {
-  background: linear-gradient(180deg, #ffe066 0%, #fff9d6 100%) !important;
-}
-html.light .room-card .btn--primary,
-body.light .room-card .btn--primary {
-  background: linear-gradient(90deg, #ffe066 80%, #fff9d6 100%) !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe06699 !important;
-  box-shadow: 0 2px 12px #ffe06644 !important;
-  text-shadow: none !important;
-}
-html.light .room-card .btn--primary:hover,
-body.light .room-card .btn--primary:hover {
-  background: linear-gradient(90deg, #fffbe6 70%, #ffe066 100%) !important;
-  color: #181a1b !important;
-  text-shadow: none !important;
-}
-html.light .room-card__body p,
-body.light .room-card__body p {
-  color: #232e4d !important;
-}
-html.light .room-card__body .text-gray-300,
-html.light .room-card__body .text-gray-400,
-body.light .room-card__body .text-gray-300,
-body.light .room-card__body .text-gray-400 {
-  color: #7c6a00 !important;
-}
-html.light .premium-room-card,
-body.light .premium-room-card {
-  background: linear-gradient(135deg, #fffbe6 80%, #ffe066 100%) !important;
-  color: #232e4d !important;
-  border-radius: 1.2rem !important;
-  box-shadow: 0 8px 32px #ffe06644, 0 1.5px 0 #ffe06611 !important;
-  border: 1.5px solid #ffe06699 !important;
-}
-html.light .premium-header,
-body.light .premium-header {
-  background: transparent !important;
-}
-html.light .premium-avatar,
-body.light .premium-avatar {
-  background: linear-gradient(135deg, #ffe066 60%, #fffbe6 100%) !important;
-  color: #bfa100 !important;
-  box-shadow: 0 2px 10px 0 #ffe06644 !important;
-}
-html.light .premium-title,
-body.light .premium-title {
-  color: #bfa100 !important;
-}
-html.light .premium-badge,
-body.light .premium-badge {
-  background: #ffe066 !important;
-  color: #232e4d !important;
-  border: 1px solid #ffe06699 !important;
-}
-html.light .room-card:hover,
-body.light .room-card:hover {
-  box-shadow: 0 16px 48px #ffe06666 !important;
-  background: linear-gradient(135deg, #fff7b2 60%, #ffe066 100%) !important;
-}
-html.light .room-card__footer,
-body.light .room-card__footer {
-  border-top: 1px solid #ffe06644 !important;
+html,
+body,
+.page-container,
+.vocably-landing-main {
+  background: #000 !important;
 }
 
-html.light .modal-backdrop,
-body.light .modal-backdrop {
-  background: rgba(255, 240, 102, 0.18) !important;
-  backdrop-filter: blur(7px) !important;
-  -webkit-backdrop-filter: blur(7px) !important;
+/* Force pure black background and remove overlays in dark mode */
+html:not(.light), body:not(.light) {
+  background: #000 !important;
+}
+body:not(.light)::before {
+  background: none !important;
+  opacity: 0 !important;
 }
 
-html.light .modal-content,
-body.light .modal-content {
-  background: linear-gradient(135deg, #fffbe6 85%, #ffe066 100%) !important;
-  color: #232e4d !important;
-  border-radius: var(--radius-lg) !important;
-  box-shadow: 0 8px 48px 0 #ffe06633, 0 2px 12px 0 #ffe06622 !important;
-  border: 1.5px solid #ffe066cc !important;
-  max-width: 540px !important;
-}
-
-html.light .modal-content input,
-html.light .modal-content select,
-html.light .modal-content textarea,
-body.light .modal-content input,
-body.light .modal-content select,
-body.light .modal-content textarea {
-  background: #fff !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe06699 !important;
-  box-shadow: 0 1px 4px #ffe06622 !important;
-}
-
-html.light .modal-content input:focus,
-html.light .modal-content select:focus,
-html.light .modal-content textarea:focus,
-body.light .modal-content input:focus,
-body.light .modal-content select:focus,
-body.light .modal-content textarea:focus {
-  border-color: #bfa100 !important;
-  box-shadow: 0 0 0 2px #ffe06655 !important;
-}
-
-html.light .modal-content .modal-actions button,
-body.light .modal-content .modal-actions button {
-  background: linear-gradient(90deg, #ffe066 80%, #fffbe6 100%) !important;
-  color: #232e4d !important;
-  border: 1.5px solid #ffe06699 !important;
-  box-shadow: 0 2px 12px #ffe06644 !important;
-  font-weight: 700 !important;
-}
-html.light .modal-content .modal-actions button:hover,
-body.light .modal-content .modal-actions button:hover {
-  background: linear-gradient(90deg, #fffbe6 70%, #ffe066 100%) !important;
-  color: #181a1b !important;
-  box-shadow: 0 4px 16px #ffe06699 !important;
+.vocably-landing-main {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  display: block;
 }

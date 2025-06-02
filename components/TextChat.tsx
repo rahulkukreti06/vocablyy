@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRoomContext } from '@livekit/components-react';
 import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 interface Message {
   id: string;
@@ -10,6 +11,7 @@ interface Message {
 }
 
 export const TextChat = () => {
+  const { data: session } = useSession();
   const room = useRoomContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -29,7 +31,7 @@ export const TextChat = () => {
     try {
       const message: Message = {
         id: Date.now().toString(),
-        sender: room.localParticipant.identity,
+        sender: session?.user?.name || room.localParticipant.identity,
         content: newMessage,
         timestamp: Date.now(),
       };

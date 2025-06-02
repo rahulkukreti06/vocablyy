@@ -1,63 +1,75 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
-export function useLiveParticipantCounts(rooms: { id: string; name: string }[]) {
+export function useLiveParticipantCounts(rooms: { id: string }[]) {
   const [counts, setCounts] = useState<{ [roomId: string]: number }>({});
+  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
+    if (!rooms || rooms.length === 0) return;
+    let subscription: any;
     let ws: WebSocket | null = null;
+    let wsActive = false;
     let pollInterval: NodeJS.Timeout | null = null;
 
-    // Determine WebSocket URL based on environment
-    let wsUrl = '';
-    if (typeof window !== 'undefined') {
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        wsUrl = 'ws://localhost:3001';
-      } else {
-        wsUrl = `wss://${window.location.host}/ws`;
-      }
-    }
-
-    // Try to connect to WebSocket for live updates
-    try {
-      ws = new window.WebSocket(wsUrl);
+    // WebSocket real-time updates
+    function setupWebSocket() {
+      ws = new window.WebSocket('ws://localhost:3001');
+      wsRef.current = ws;
+      ws.onopen = () => {
+        wsActive = true;
+        console.log('[useLiveParticipantCounts] WebSocket connected');
+      };
       ws.onmessage = (event) => {
+        console.log('[useLiveParticipantCounts] WebSocket message received:', event.data);
         try {
           const data = JSON.parse(event.data);
-          if (data.type === 'counts' && data.rooms && typeof data.rooms === 'object') {
-            if (isMounted) setCounts(data.rooms);
+          if (data.type === 'counts' && data.rooms) {
+            console.log('[useLiveParticipantCounts] Received counts update:', data.rooms);
+            setCounts((prev) => ({ ...prev, ...data.rooms }));
           }
-        } catch {}
-      };
-      ws.onerror = () => {
-        // fallback to polling
-        pollInterval = setInterval(fetchCounts, 1000);
+        } catch (err) {
+          console.error('[useLiveParticipantCounts] Error parsing WebSocket message:', err);
+        }
       };
       ws.onclose = () => {
-        // fallback to polling
-        pollInterval = setInterval(fetchCounts, 1000);
+        wsActive = false;
+        console.log('[useLiveParticipantCounts] WebSocket disconnected, retrying...');
+        setTimeout(setupWebSocket, 2000);
       };
-    } catch {
-      // fallback to polling
-      pollInterval = setInterval(fetchCounts, 1000);
+      ws.onerror = (err) => {
+        console.error('[useLiveParticipantCounts] WebSocket error:', err);
+      };
     }
+    setupWebSocket();
 
+    // Fallback: also subscribe to Supabase for DB sync
     async function fetchCounts() {
-      try {
-        const resp = await fetch('/api/room-participants');
-        const data = await resp.json();
-        if (data.rooms && typeof data.rooms === 'object') {
-          if (isMounted) setCounts(data.rooms);
-        }
-      } catch {}
+      const { data, error } = await supabase
+        .from('rooms')
+        .select('id,participants');
+      if (!error && data) {
+        const countsObj: { [roomId: string]: number } = {};
+        data.forEach((room: any) => {
+          countsObj[room.id] = room.participants;
+        });
+        setCounts(countsObj);
+      }
     }
-
-    // Initial fetch in case WebSocket is slow
     fetchCounts();
+    subscription = supabase
+      .channel('public:rooms')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rooms' }, () => {
+        fetchCounts();
+      })
+      .subscribe();
+
+    // Poll every 5 seconds
+    pollInterval = setInterval(fetchCounts, 5000);
 
     return () => {
-      isMounted = false;
-      if (ws) ws.close();
+      if (subscription) supabase.removeChannel(subscription);
+      if (wsRef.current) wsRef.current.close();
       if (pollInterval) clearInterval(pollInterval);
     };
   }, [rooms]);

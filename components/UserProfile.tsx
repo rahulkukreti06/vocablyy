@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaUser, FaLanguage, FaGlobe, FaPlus, FaTimes, FaGem, FaEdit, FaCrown, FaPlusCircle, FaBook, FaCamera } from 'react-icons/fa';
 import { X } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import styles from '../styles/UserProfile.module.css';
 
 interface LanguagePreference {
@@ -22,8 +23,10 @@ const languages = [
 const levels = ['Beginner', 'Intermediate', 'Advanced'];
 
 export const UserProfile: React.FC<UserProfileProps> = ({ onLanguagePreferenceChange, onClose }) => {
-  // Assume username is stored in localStorage for now (for demo, replace with auth in real app)
+  const { data: session } = useSession();
+  // Prefer session user name, fallback to localStorage, then empty string
   const [username, setUsername] = useState(() => {
+    if (session?.user?.name) return session.user.name;
     if (typeof window !== 'undefined') {
       return localStorage.getItem('userName') || '';
     }
@@ -100,11 +103,8 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onLanguagePreferenceCh
 
   const handleSave = async () => {
     setSaving(true);
-    // In real app, upload avatar to Supabase Storage and get URL
     let avatar_url = avatar;
-    // If avatar is a base64 string, upload it
     if (avatar && avatar.startsWith('data:')) {
-      // Upload to Supabase Storage
       const res = await fetch('/api/upload-avatar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -125,8 +125,30 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onLanguagePreferenceCh
         learning_languages: learningLanguages,
       }),
     });
+    // Notify Google Sheet with all user info if available
+    if (session?.user?.email && session?.user?.name) {
+      fetch('/api/notify-google-sheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: session.user.email,
+          name: session.user.name,
+          provider: 'google',
+          userId: session.user.id || '',
+          isNewUser: false, // set to true if you want to track new users only
+          timestamp: new Date().toISOString()
+        }),
+      });
+    }
     setSaving(false);
   };
+
+  // If session.user.name changes (e.g., after login), update username state
+  useEffect(() => {
+    if (session?.user?.name && session.user.name !== username) {
+      setUsername(session.user.name);
+    }
+  }, [session?.user?.name]);
 
   return (
     <div className={styles.modal} style={{ maxWidth: 480, margin: '0 auto', padding: '2.2rem 1.2rem' }}>

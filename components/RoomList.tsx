@@ -5,20 +5,21 @@ import styles from '../styles/RoomList.module.css';
 interface Room {
   id: string;
   name: string;
-  createdAt: number;
+  created_at: number;
   participants: number;
-  maxParticipants: number;
+  max_participants: number;
   language: string;
-  languageLevel: 'beginner' | 'intermediate' | 'advanced';
-  isPublic: boolean;
+  language_level: 'beginner' | 'intermediate' | 'advanced';
+  is_public: boolean;
   password?: string;
-  createdBy: string;
+  created_by: string;
   topic?: string;
   tags?: string[];
 }
 
 interface RoomListProps {
   rooms: Room[];
+  participantCounts: { [roomId: string]: number };
   selectedLanguage: string;
   selectedLevel: string;
   onJoinRoom: (room: Room) => void;
@@ -36,6 +37,7 @@ interface RoomListProps {
 
 export const RoomList: React.FC<RoomListProps> = ({
   rooms,
+  participantCounts = {},
   selectedLanguage,
   selectedLevel,
   onJoinRoom,
@@ -57,17 +59,17 @@ export const RoomList: React.FC<RoomListProps> = ({
       term === '' ||
       (room.name && room.name.toLowerCase().includes(term)) ||
       (room.topic && room.topic.toLowerCase().includes(term)) ||
-      (room.createdBy && room.createdBy.toLowerCase().includes(term)) ||
+      (room.created_by && room.created_by.toLowerCase().includes(term)) ||
       (room.language && room.language.toLowerCase().includes(term)) ||
-      (room.languageLevel && room.languageLevel.toLowerCase().includes(term))
+      (room.language_level && room.language_level.toLowerCase().includes(term))
     );
     if (roomType !== 'all') {
-      matches = matches && (roomType === 'public' ? room.isPublic : !room.isPublic);
+      matches = matches && (roomType === 'public' ? room.is_public : !room.is_public);
     }
     if (availability !== 'all') {
       matches = matches && (availability === 'available'
-        ? room.participants < room.maxParticipants
-        : room.participants >= room.maxParticipants);
+        ? room.participants < room.max_participants
+        : room.participants >= room.max_participants);
     }
     return matches;
   });
@@ -75,7 +77,7 @@ export const RoomList: React.FC<RoomListProps> = ({
   // Sort rooms
   const sortedRooms = [...filteredRooms].sort((a, b) => {
     if (sortBy === 'newest') {
-      return b.createdAt - a.createdAt;
+      return b.created_at - a.created_at;
     } else if (sortBy === 'popular') {
       return b.participants - a.participants;
     } else {
@@ -110,6 +112,7 @@ export const RoomList: React.FC<RoomListProps> = ({
             <RoomCard
               key={room.id}
               room={room}
+              liveParticipantCount={participantCounts[room.id] || 0}
               onJoin={onJoinRoom}
               onRemoveRoom={undefined}
               onParticipantUpdate={onParticipantUpdate}

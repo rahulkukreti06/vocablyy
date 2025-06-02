@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabaseClient'; // Adjust the import based on your project structure
 
 // Initialize participant counts
 let participantCounts = global.participantCounts || {};
@@ -6,8 +7,18 @@ if (!global.participantCounts) {
   global.participantCounts = participantCounts;
 }
 
+// Add type declaration for globalThis.broadcastParticipantCounts
+declare global {
+  // eslint-disable-next-line no-var
+  var broadcastParticipantCounts: (() => void) | undefined;
+}
+
 // Function to broadcast counts to WebSocket clients (server-side)
 function broadcastParticipantCounts() {
+  if (typeof globalThis.broadcastParticipantCounts === 'function') {
+    globalThis.broadcastParticipantCounts();
+    return;
+  }
   const message = JSON.stringify({ type: 'counts', rooms: participantCounts });
   if (typeof window === 'undefined') {
     // Server-side: Send to WebSocket server
@@ -46,6 +57,15 @@ export async function POST(request: Request) {
       participantCounts[roomId] = (participantCounts[roomId] || 0) + 1;
     } else if (action === 'leave') {
       participantCounts[roomId] = Math.max(0, (participantCounts[roomId] || 0) - 1);
+    }
+
+    // Update the participants column in Supabase
+    const { data: updateData, error: updateError } = await supabase
+      .from('rooms')
+      .update({ participants: participantCounts[roomId] })
+      .eq('id', roomId);
+    if (updateError) {
+      console.error('Supabase update error:', updateError);
     }
 
     // Broadcast the update to all WebSocket clients

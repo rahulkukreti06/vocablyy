@@ -10,7 +10,7 @@ interface CreateRoomModalProps {
   onCreateRoom: (roomData: {
     name: string;
     language: string;
-    languageLevel: 'beginner' | 'intermediate' | 'advanced';
+    language_level: 'beginner' | 'intermediate' | 'advanced';
     isPublic: boolean;
     password?: string;
     maxParticipants: number;
@@ -59,7 +59,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
     onCreateRoom({
       name,
       language: selectedLanguage,
-      languageLevel: selectedLevel.toLowerCase() as 'beginner' | 'intermediate' | 'advanced',
+      language_level: selectedLevel.toLowerCase() as 'beginner' | 'intermediate' | 'advanced',
       isPublic,
       password: isPublic ? undefined : password,
       maxParticipants,

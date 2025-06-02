@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { generateRoomId } from '@/lib/client-utils';
 import { FaUser, FaLock, FaComments, FaFilter } from 'react-icons/fa';
 import { Header, SearchBar } from '../components/Header';
 import { RoomList } from '../components/RoomList';
@@ -12,18 +11,21 @@ import JoinRoomModal from '../components/JoinRoomModal';
 import { useRouter } from 'next/navigation';
 import { useLiveParticipantCounts } from '../hooks/useLiveParticipantCounts';
 import BuyMeCoffee from '../components/BuyMeCoffee';
+import { supabase } from '@/lib/supabaseClient';
+import { useSession } from 'next-auth/react';
 
 interface Room {
   id: string;
   name: string;
-  createdAt: number;
+  created_at: number;
   participants: number;
-  maxParticipants: number;
+  max_participants: number;
   language: string;
-  languageLevel: 'beginner' | 'intermediate' | 'advanced';
-  isPublic: boolean;
+  language_level: 'beginner' | 'intermediate' | 'advanced';
+  is_public: boolean;
   password?: string;
-  createdBy: string;
+  created_by: string;
+  created_by_name: string; // <-- added field
   topic?: string;
   tags?: string[];
 }
@@ -47,6 +49,7 @@ export default function Page() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [roomsLoading, setRoomsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [joiningRoom, setJoiningRoom] = useState<Room | null>(null);
@@ -60,18 +63,81 @@ export default function Page() {
   const router = useRouter();
   const participantCounts = useLiveParticipantCounts(rooms);
   const isMobile = useMediaQuery('(max-width: 640px)');
+  const { data: session } = useSession();
+
+  // Custom error modal for sign-in required
+  const [showSignInError, setShowSignInError] = useState(false);
+  const [signInErrorMessage, setSignInErrorMessage] = useState('');
+
+  const showSignInModal = (message: string) => {
+    setSignInErrorMessage(message);
+    setShowSignInError(true);
+  };
+
+  // Fetch rooms from Supabase and subscribe to real-time changes
+  useEffect(() => {
+    let subscription: any;
+    async function fetchRooms() {
+      setRoomsLoading(true);
+      const { data, error } = await supabase
+        .from('rooms')
+        .select('*')
+        .order('created_at', { ascending: false });
+      console.log('Supabase fetchRooms result:', { data, error }); // <-- log result
+      if (!error && data) {
+        setRooms(data);
+      }
+      setRoomsLoading(false);
+    }
+    fetchRooms();
+    // Subscribe to real-time changes
+    subscription = supabase
+      .channel('public:rooms')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'rooms' }, (payload) => {
+        fetchRooms();
+      })
+      .subscribe();
+    return () => {
+      if (subscription) supabase.removeChannel(subscription);
+    };
+  }, []);
 
   const handleJoinRoom = async (room: Room) => {
-    // Use real participant count
-    const realCount = participantCounts[room.id] ?? room.participants;
-    if (!room.isPublic) {
-      setJoiningRoom(room);
-      setShowJoinModal(true);
-      setJoinPasswordError(null);
+    if (!session || !session.user) {
+      showSignInModal('You must be signed in to join or create a room. Please sign in with your Google account to continue.');
       return;
     }
+    // Use real participant count
+    const realCount = participantCounts[room.id] ?? room.participants;
+    if (!room.is_public) {
+      // Only show join modal if password is set (not empty)
+      if (room.password && room.password.length > 0) {
+        setJoiningRoom(room);
+        setShowJoinModal(true);
+        setJoinPasswordError(null);
+        return;
+      } else {
+        // If private but no password, allow join directly
+        if (realCount >= room.max_participants) {
+          alert('Room is full!');
+          return;
+        }
+        try {
+          await fetch('/api/room-participants', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roomId: room.id, action: 'join' }),
+          });
+          router.push(`/rooms/${room.id}`); // Removed setTimeout for instant navigation
+        } catch (err) {
+          alert('Failed to join the room.');
+          console.error(err);
+        }
+        return;
+      }
+    }
     // Public room: join instantly
-    if (realCount >= room.maxParticipants) {
+    if (realCount >= room.max_participants) {
       alert('Room is full!');
       return;
     }
@@ -82,30 +148,27 @@ export default function Page() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roomId: room.id, action: 'join' }),
       });
-      // Wait a short moment for the UI/WebSocket to update
-      setTimeout(() => {
-        router.push(`/rooms/${room.id}`);
-      }, 300);
+      router.push(`/rooms/${room.id}`); // Removed setTimeout for instant navigation
     } catch (err) {
       alert('Failed to join the room.');
       console.error(err);
     }
   };
 
-  const handleModalJoin = (password?: string) => {
+  const handleModalJoin = async (password?: string) => {
     if (!joiningRoom) return;
     setIsJoining(true);
     let passwordIncorrect = false;
     try {
       // Password check for private rooms
-      if (!joiningRoom.isPublic && joiningRoom.password && joiningRoom.password !== password) {
+      if (!joiningRoom.is_public && joiningRoom.password && joiningRoom.password !== password) {
         setJoinPasswordError('Incorrect password');
         setIsJoining(false);
         passwordIncorrect = true;
         return;
       }
       const realCount = participantCounts[joiningRoom.id] ?? joiningRoom.participants;
-      if (realCount >= joiningRoom.maxParticipants) {
+      if (realCount >= joiningRoom.max_participants) {
         alert('Room is full!');
       } else {
         router.push(`/rooms/${joiningRoom.id}`);
@@ -130,82 +193,80 @@ export default function Page() {
     setIsJoining(false);
   };
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('vocablyRooms');
-      if (saved) {
-        setRooms(JSON.parse(saved));
-      }
-      // Real-time update: listen for localStorage changes
-      const handleStorage = (event: StorageEvent) => {
-        if (event.key === 'vocablyRooms' && event.newValue) {
-          setRooms(JSON.parse(event.newValue));
-        }
-      };
-      window.addEventListener('storage', handleStorage);
-      // Poll as fallback for same-tab updates
-      const interval = setInterval(() => {
-        const saved = localStorage.getItem('vocablyRooms');
-        if (saved) {
-          let rooms = JSON.parse(saved);
-          const now = Date.now();
-          // Remove rooms with 0 participants for over 5 minutes
-          rooms = rooms.filter((room: any) => {
-            if (room.participants > 0) {
-              room.emptySince = undefined;
-              return true;
-            }
-            // If no participants, start or check emptySince
-            if (!room.emptySince) {
-              room.emptySince = now;
-              return true;
-            }
-            // If empty for more than 5 minutes (300000 ms), delete
-            return now - room.emptySince < 300000;
-          });
-          localStorage.setItem('vocablyRooms', JSON.stringify(rooms));
-          setRooms(rooms);
-        }
-      }, 60000); // every 1 minute
-      return () => {
-        window.removeEventListener('storage', handleStorage);
-        clearInterval(interval);
-      };
-    }
-  }, []);
-
-  const handleCreateRoom = (roomData: {
+  const handleCreateRoom = async (roomData: {
     name: string;
     language: string;
-    languageLevel: 'beginner' | 'intermediate' | 'advanced';
+    language_level: 'beginner' | 'intermediate' | 'advanced';
     isPublic: boolean;
     password?: string;
     maxParticipants: number;
     topic?: string;
     tags: string[];
   }) => {
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('vocablyRooms') : null;
-    const prevRooms: Room[] = saved ? JSON.parse(saved) : [];
-    const newRoom: Room = {
-      id: generateRoomId(),
-      name: roomData.name,
-      createdAt: Date.now(),
-      participants: 0,
-      maxParticipants: roomData.maxParticipants,
-      language: roomData.language,
-      languageLevel: roomData.languageLevel,
-      isPublic: roomData.isPublic,
-      password: roomData.password,
-      createdBy: (typeof window !== 'undefined' && localStorage.getItem('userName')) || 'Anonymous',
-      topic: roomData.topic,
-      tags: roomData.tags,
-    };
-    const updatedRooms = [newRoom, ...prevRooms];
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('vocablyRooms', JSON.stringify(updatedRooms));
+    if (!session || !session.user) {
+      showSignInModal('You must be signed in to create a room. Please sign in with your Google account to continue.');
+      return;
     }
-    setRooms(updatedRooms);
+    if (!session.user.id) {
+      showSignInModal('You must be signed in to create a room. Please sign in with your Google account to continue.');
+      return;
+    }
+    // Use only a real UUID for created_by
+    let created_by = String(session.user.id).trim();
+    
+    const newRoom: Room = {
+      id: crypto.randomUUID(),
+      name: roomData.name,
+      created_at: new Date().toISOString(),
+      participants: 0,
+      max_participants: roomData.maxParticipants,
+      language: roomData.language,
+      language_level: roomData.language_level,
+      is_public: roomData.isPublic,
+      password: roomData.password ?? '', // default to empty string
+      created_by: created_by, // always a UUID
+      created_by_name: session.user.name || '', // store real name
+      topic: roomData.topic ?? '',       // default to empty string
+      tags: roomData.tags ?? [],         // default to empty array
+    };
+    // Debug: log the newRoom object before inserting
+    console.log('Creating new room:', newRoom);
+    // Log the Supabase key being used
+    console.log('Supabase key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    // Final fallback for created_by (should always be a UUID or a valid provider user ID)
+    if (!newRoom.created_by || typeof newRoom.created_by !== 'string' || newRoom.created_by.length < 6) {
+      showSignInModal('You must be signed in with a valid account to create a room. Please sign in with your Google account to continue.');
+      return;
+    }
+    console.log('Final newRoom object before insert:', newRoom);
+    // Debug: log the newRoom object and created_by before inserting
+    console.log('DEBUG: About to insert newRoom:', newRoom);
+    console.log('DEBUG: newRoom.created_by value:', newRoom.created_by);
+
+    // Minimal insert for debugging
+    const minimalRoom = {
+      id: newRoom.id,
+      name: newRoom.name,
+      created_at: newRoom.created_at,
+      participants: newRoom.participants,
+      max_participants: newRoom.max_participants,
+      language: newRoom.language,
+      language_level: newRoom.language_level,
+      is_public: newRoom.is_public,
+      password: newRoom.password, // <-- ensure password is included
+      created_by: newRoom.created_by,
+      created_by_name: newRoom.created_by_name,
+      topic: newRoom.topic, // <-- ensure topic is included
+    };
+    console.log('DEBUG: Minimal insert payload:', minimalRoom);
+    const { data, error } = await supabase.from('rooms').insert([minimalRoom]);
+    console.log('Supabase insert result:', { data, error });
+    if (error) {
+      alert('Failed to create room: ' + error.message + '\n' + JSON.stringify(error, null, 2));
+      return;
+    }
     setShowCreateModal(false);
+    setRooms(prevRooms => [newRoom, ...prevRooms]);
   };
 
   // Merge real participant counts into rooms for display
@@ -222,6 +283,24 @@ export default function Page() {
     console.log('roomsWithRealCounts:', roomsWithRealCounts);
   }, [participantCounts, roomsWithRealCounts]);
 
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'light' || stored === 'dark') {
+        setTheme(stored);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
+      }
+      const listener = () => {
+        setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+      };
+      window.addEventListener('storage', listener);
+      return () => window.removeEventListener('storage', listener);
+    }
+  }, []);
+
   return (
     <>
       <Header
@@ -231,54 +310,66 @@ export default function Page() {
         onSearchChange={setSearchTerm}
       />
       <main className="vocably-landing-main">
-        {/* Search bar at top of body for mobile only */}
-        {isMobile && (
-          <div style={{ margin: '1.5rem 0 0rem 0', width: '100%' }}>
-            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+        {/* Remove duplicate 'Active Rooms' and filter row here, keep only the one inside the rooms.length > 0 conditional below */}
+        {roomsLoading ? (
+          <div className="loading-indicator">Loading rooms...</div>
+        ) : rooms.length === 0 ? (
+          <div
+            style={{
+              minHeight: '60vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: `'Inter', 'Segoe UI', Arial, sans-serif`,
+              color: theme === 'dark' ? '#fff' : '#232e4d',
+              textAlign: 'center',
+              fontWeight: 600,
+              fontSize: '2.1rem',
+              letterSpacing: '0.01em',
+              opacity: 0.92,
+            }}
+          >
+            <span style={{ fontSize: '2.7rem', fontWeight: 800, marginBottom: 12, color: theme === 'dark' ? '#ffe066' : '#10b981', fontFamily: 'inherit', display: 'block' }}>
+              Welcome to Vocably
+            </span>
+            <span style={{ fontSize: '1.25rem', fontWeight: 500, color: theme === 'dark' ? '#bdbdbd' : '#444', marginBottom: 18, display: 'block' }}>
+              There are no active rooms right now.<br />Be the first to create a new conversation!
+            </span>
+            <button
+              className="btn btn--primary"
+              style={{
+                fontSize: '1.1rem',
+                fontWeight: 700,
+                padding: '0.8rem 2.2rem',
+                borderRadius: 16,
+                background: theme === 'dark' ? 'linear-gradient(90deg, #ffe066 60%, #bfa500 100%)' : 'linear-gradient(90deg, #10b981 60%, #1de9b6 100%)',
+                color: theme === 'dark' ? '#181a1b' : '#fff',
+                border: 'none',
+                boxShadow: theme === 'dark' ? '0 2px 12px #ffe06644' : '0 2px 12px #10b98144',
+                marginTop: 18,
+                cursor: 'pointer',
+                transition: 'background 0.18s, color 0.18s',
+              }}
+              onClick={() => setShowCreateModal(true)}
+            >
+              + Create Room
+            </button>
           </div>
-        )}
-        {rooms.length === 0 && (
-          <>
-            <section className="vocably-hero">
-              <h1 className="vocably-hero-title">Talk Freely, Connect Instantly</h1>
-              <p className="vocably-hero-desc">
-                Real-time voice chat rooms for practicing English, meeting new people, and growing your confidence—all for free.
-              </p>
-              <a href="/explore" className="vocably-cta-btn">Start Chatting</a>
-            </section>
-            <section className="vocably-features">
-              <div className="vocably-feature">
-                <span className="vocably-feature-icon premium-icon"><FaComments size={32} /></span>
-                <h3>Instant Rooms</h3>
-                <p>Join or create a room in seconds—no sign-up required.</p>
-              </div>
-              <div className="vocably-feature">
-                <span className="vocably-feature-icon premium-icon"><FaUser size={32} /></span>
-                <h3>Global Community</h3>
-                <p>Connect with people from around the world and make friends.</p>
-              </div>
-              <div className="vocably-feature">
-                <span className="vocably-feature-icon premium-icon"><FaLock size={32} /></span>
-                <h3>Safe & Private</h3>
-                <p>Public and private rooms, with moderation tools for safety.</p>
-              </div>
-            </section>
-          </>
-        )}
-        {rooms.length > 0 && (
+        ) : (
           <>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.7rem',
-                marginTop: isMobile ? '0.7rem' : '4rem',
+                marginTop: isMobile ? '6.5rem' : '8rem', // add a bit more gap for mobile
                 marginBottom: '0.7rem',
                 flexWrap: 'wrap',
                 justifyContent: 'center',
               }}
             >
-              <h2 className="vocably-section-title" style={{ margin: 0, marginRight: '14rem' }}>
+              <h2 className="vocably-section-title" style={{ margin: 0, marginRight: isMobile ? 'auto' : '14rem', alignSelf: 'flex-start' }}>
                 Active Rooms
               </h2>
               <button
@@ -288,8 +379,8 @@ export default function Page() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
-                  background: 'linear-gradient(120deg, rgba(16,185,129,0.18) 60%, rgba(17,18,22,0.89) 100%)',
-                  color: '#10b981',
+                  background: theme === 'dark' ? '#000' : 'linear-gradient(120deg, rgba(16,185,129,0.18) 60%, rgba(17,18,22,0.89) 100%)',
+                  color: theme === 'dark' ? '#10b981' : '#10b981',
                   border: '1.5px solid #10b981',
                   borderRadius: 12,
                   fontWeight: 700,
@@ -310,8 +401,8 @@ export default function Page() {
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
                   style={{
-                    background: 'linear-gradient(120deg, rgba(24,26,27,0.92) 70%, rgba(17,18,22,0.89) 100%)',
-                    color: '#ffd700',
+                    background: theme === 'dark' ? '#000' : 'linear-gradient(120deg, rgba(24,26,27,0.92) 70%, rgba(17,18,22,0.89) 100%)',
+                    color: theme === 'dark' ? '#ffd700' : '#ffd700',
                     border: '1.5px solid #ffd700',
                     borderRadius: 12,
                     fontWeight: 600,
@@ -339,6 +430,7 @@ export default function Page() {
             </div>
             <RoomList
               rooms={roomsWithRealCounts}
+              participantCounts={participantCounts}
               selectedLanguage={''}
               selectedLevel={''}
               onJoinRoom={handleJoinRoom}
@@ -367,8 +459,9 @@ export default function Page() {
         onJoin={handleModalJoin}
         roomName={joiningRoom?.name || ''}
         isJoining={isJoining}
-        requirePassword={!!joiningRoom && !joiningRoom.isPublic && !!joiningRoom.password}
+        requirePassword={!!joiningRoom && !joiningRoom.is_public && !!joiningRoom.password}
         passwordError={joinPasswordError || undefined}
+        defaultUserName={session?.user?.name || ''}
       />
       {showProfileModal && (
         <div className="modal-backdrop flex items-center justify-center z-50 bg-black bg-opacity-40 fixed inset-0">
@@ -381,6 +474,76 @@ export default function Page() {
               ×
             </button>
             <UserProfile onLanguagePreferenceChange={() => {}} onClose={() => {}} />
+          </div>
+        </div>
+      )}
+      {showSignInError && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0,0,0,0.45)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <div style={{
+            background: '#181a1b',
+            color: '#fff',
+            borderRadius: 18,
+            boxShadow: '0 8px 32px #0008',
+            padding: '2.5rem 2.2rem',
+            maxWidth: 380,
+            width: '90vw',
+            textAlign: 'center',
+            fontSize: 18,
+            fontWeight: 500,
+            position: 'relative',
+          }}>
+            <div style={{ fontSize: 38, marginBottom: 16 }}>🚫</div>
+            <div style={{ marginBottom: 18 }}>{signInErrorMessage}</div>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 8 }}>
+              <button
+                onClick={() => {
+                  // @ts-ignore
+                  if (typeof window !== 'undefined') {
+                    import('next-auth/react').then(({ signIn }) => signIn('google'));
+                  }
+                }}
+                style={{
+                  background: 'linear-gradient(90deg, #4285F4 0%, #1a73e8 100%)', // solid blue gradient
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 10,
+                  fontWeight: 700,
+                  fontSize: 17,
+                  padding: '0.7rem 2.2rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 12px 0 rgba(66,133,244,0.17)'
+                }}
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => setShowSignInError(false)}
+                style={{
+                  background: 'linear-gradient(90deg, #10b981 80%, #1de9b6 100%)',
+                  color: '#181a1b',
+                  border: 'none',
+                  borderRadius: 10,
+                  fontWeight: 700,
+                  fontSize: 17,
+                  padding: '0.7rem 2.2rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 12px 0 rgba(16,185,129,0.17)'
+                }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

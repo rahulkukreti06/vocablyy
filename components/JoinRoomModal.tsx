@@ -10,6 +10,7 @@ interface JoinRoomModalProps {
   isJoining: boolean;
   requirePassword?: boolean;
   passwordError?: string;
+  defaultUserName?: string; // <-- add this prop
 }
 
 const glassyModalStyle: React.CSSProperties = {
@@ -35,7 +36,7 @@ const modalKeyframes = `@keyframes modalIn {
   to { opacity: 1; transform: none; }
 }`;
 
-const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onCancel, onJoin, roomName, isJoining, requirePassword, passwordError }) => {
+const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onCancel, onJoin, roomName, isJoining, requirePassword, passwordError, defaultUserName }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -160,7 +161,10 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onCancel, onJoin,
               </button>
               <button 
                 className="btn btn--secondary min-h-[44px] w-full mobile:min-h-[50px]"
-                onClick={onCancel}
+                onClick={async () => {
+                  console.log('Cancel button clicked');
+                  await onCancel();
+                }}
                 disabled={isJoining}
                 style={{ borderRadius: 12, fontWeight: 700, fontSize: 17, background: 'rgba(24,26,32,0.7)', color: '#fff', border: '1.5px solid #22242a' }}
               >

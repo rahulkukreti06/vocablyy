@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { supabase } from '@/lib/supabaseClient';
 
 // Type declaration for global participant counts
 declare global {
@@ -40,6 +41,9 @@ export async function POST(req: NextRequest) {
     const roomId = data.roomId;
     if (!roomId) return NextResponse.json({ error: 'Missing roomId' }, { status: 400 });
     participantCounts[roomId] = (participantCounts[roomId] || 0) + 1;
+    // Update Supabase participants column and log result
+    const { data: updateData, error: updateError } = await supabase.from('rooms').update({ participants: participantCounts[roomId] }).eq('id', roomId);
+    console.log('Supabase update result (join):', { updateData, updateError });
     broadcastParticipantCounts();
     console.log('JOIN API:', { roomId, after: participantCounts[roomId] });
     return NextResponse.json({ roomId, count: participantCounts[roomId] });

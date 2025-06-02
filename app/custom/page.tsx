@@ -23,7 +23,7 @@ export default async function CustomRoomConnection(props: {
 
   return (
     <main data-lk-theme="default" style={{ height: '100%' }}>
-      <VideoConferenceClientImpl liveKitUrl={liveKitUrl} token={token} codec={codec as AllowedCodec} />
+      <VideoConferenceClientImpl serverUrl={liveKitUrl} token={token} />
     </main>
   );
 }

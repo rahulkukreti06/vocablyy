@@ -34,12 +34,12 @@ export async function POST(req: NextRequest) {
       bio,
       avatar_url,
       native_language,
-      learning_languages: Array.isArray(learning_languages) ? learning_languages.join(',') : learning_languages,
-    }, { onConflict: 'username' })
+      learning_languages,
+    }, { onConflict: ['username'] })
     .select()
     .single();
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   return NextResponse.json(data);
-}
+} 
