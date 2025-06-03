@@ -52,6 +52,13 @@ export const Header: React.FC<HeaderProps> = ({ onCreateRoomClick, onProfileClic
   const isDesktop = useMediaQuery('(min-width: 641px)');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const { data: session, status } = useSession();
+  useEffect(() => {
+    if (session) {
+      // Debug: log the session object to check user.image
+      // eslint-disable-next-line no-console
+      console.log('SESSION DEBUG:', session);
+    }
+  }, [session]);
 
   useEffect(() => {
     setMounted(true);
@@ -127,13 +134,6 @@ export const Header: React.FC<HeaderProps> = ({ onCreateRoomClick, onProfileClic
           <span>Light theme <span style={{ color: '#bfa100', fontWeight: 900 }}>coming soon</span>!</span>
           <style>{`
             @keyframes fade-in-popup {
-              from { opacity: 0; transform: translateX(-50%) translateY(-24px) scale(0.98); }
-              to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-            }
-          `}</style>
-        </div>
-      )}
-      <header className={`header-root${scrolled ? " shadow-md" : ""}`}> 
         {/* Mobile Layout */}
         {!isDesktop ? (
           <div className="header-container">
@@ -194,7 +194,10 @@ export const Header: React.FC<HeaderProps> = ({ onCreateRoomClick, onProfileClic
                           {session.user?.image && <AvatarImage src={session.user.image} alt={session.user.name || 'User'} />}
                           <AvatarFallback>{session.user?.name?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                         </Avatar>
-                        {session?.user?.name || 'Profile'}
+                        {/* Show user name and (optionally) email */}
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          {session?.user?.name || 'Profile'}
+                        </span>
                         <ChevronDown size={18} />
                       </button>
                       {profileMenuOpen && (
